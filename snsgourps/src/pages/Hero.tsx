@@ -48,34 +48,40 @@ const Hero: React.FC = () => {
   const CENTER = SIZE / 2;
   const RADIUS = 225;
   const STROKE = 30;
+  const [hoveredPill, setHoveredPill] = React.useState<number | null>(null);
 
   const pills = [
     {
       title: "SNS Venture Capital & Investment",
+      description: "Funding high-potential startups for ownership stakes.",
       color: "#E63A2E",
       mid: (328 + 360) / 2,
       icon: Building2,
     },
     {
       title: "SNS Square Technologies",
+      description: "Driving digital transformation with cutting-edge IT and software solutions.",
       color: "#8BCF00",
       mid: (291 + 323) / 2,
       icon: Laptop,
     },
     {
       title: "SNS Innovation Hub",
+      description: "Empowering digital transformations with IT and software solutions.",
       color: "#E5008D",
       mid: (254 + 286) / 2,
       icon: Brain,
     },
     {
       title: "SNS Institutions",
+      description: "Fostering holistic growth through high-quality education.",
       color: "#FF6A00",
       mid: (217 + 249) / 2,
       icon: School,
     },
     {
       title: "SNS SPINE",
+      description: "Enabling mental and physical well-being through sports, gaming, entertainment and clubs.",
       color: "#00C4F4",
       mid: (180 + 212) / 2,
       icon: HeartPulse,
@@ -84,13 +90,43 @@ const Hero: React.FC = () => {
 
   return (
     <section
-      className="w-full min-h-screen flex items-center justify-start"
+      className="w-full min-h-screen flex items-center justify-start relative"
       style={{
         marginTop: "-40px",
       }}
     >
+      {/* Gradient background blob - top right */}
+      <div 
+        className="absolute z-0" 
+        style={{
+          top: '0',
+          right: '0',
+          width: '500px',
+          height: '280px',
+          background: 'linear-gradient(90deg, #FFF4D6 0%, #FFEEB8 100%)',
+          opacity: 0.5,
+          borderRadius: '140px',
+          filter: 'blur(50px)',
+        }}
+      ></div>
+      
+      {/* Gradient background blob - bottom left */}
+      <div 
+        className="absolute z-0" 
+        style={{
+          bottom: '0',
+          left: '0',
+          width: '500px',
+          height: '280px',
+          background: 'linear-gradient(90deg, #FFF4D6 0%, #FFEEB8 100%)',
+          opacity: 0.5,
+          borderRadius: '140px',
+          filter: 'blur(50px)',
+        }}
+      ></div>
+      
       {/* ✅ ONLY THIS WRAPPER IS NEW */}
-      <div style={{ transform: "translateX(400px)" }}>
+      <div style={{ transform: "translateX(300px)" }}>
         <div
           className="relative flex items-center justify-center"
           style={{ width: SIZE, height: SIZE }}
@@ -122,17 +158,18 @@ const Hero: React.FC = () => {
               className="rounded-full bg-[#FFCC00] flex flex-col items-center justify-center text-center"
               style={{ width: 310, height: 310 }}
             >
-              <h1 className="text-5xl font-extrabold text-black">SNS</h1>
-              <p className="mt-3 text-lg text-black">Design Thinking</p>
-              <p className="text-lg text-black">Consultancy</p>
+              <h1 className="font-black text-black" style={{ fontSize: '60px', lineHeight: '1', marginBottom: '0px' }}>SNS</h1>
+              <p className="font-medium text-black" style={{ fontSize: '22px', lineHeight: '0', marginBottom: '0px' }}>Design Thinking</p>
+              <p className="font-medium text-black" style={{ fontSize: '22px', lineHeight: '1.3' }}>Consultancy</p>
             </div>
           </div>
 
           {/* ===== RIGHT-SIDE DOTS + PILLS ===== */}
-          {pills.map((p) => {
+          {pills.map((p, index) => {
             const Icon = p.icon;
             const mirrored = (360 - p.mid) % 360;
             const dotSize = 48;
+            const isHovered = hoveredPill === index;
 
             const dotPos = polarToCartesian(
               CENTER,
@@ -163,20 +200,45 @@ const Hero: React.FC = () => {
 
                 <div
                   className="absolute"
+                  onMouseEnter={() => setHoveredPill(index)}
+                  onMouseLeave={() => setHoveredPill(null)}
                   style={{
                     left: dotLeft + dotSize + 18,
-                    top: dotPos.y - 22,
+                    top: isHovered ? dotPos.y - 38 : dotPos.y - 22,
                     backgroundColor: p.color,
                     color: "white",
-                    padding: "12px 28px",
+                    padding: isHovered ? "18px 28px" : "12px 28px",
                     borderRadius: "9999px",
                     fontWeight: 700,
-                    whiteSpace: "nowrap",
-                    boxShadow: "0 6px 14px rgba(0,0,0,0.08)",
+                    whiteSpace: isHovered ? "normal" : "nowrap",
+                    boxShadow: isHovered ? "0 10px 20px rgba(0,0,0,0.15)" : "0 6px 14px rgba(0,0,0,0.08)",
+                    width: "420px",
+                    textAlign: "center",
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    cursor: "pointer",
+                    overflow: "hidden",
                   }}
                 >
-                  {p.title}
+                  <div style={{ 
+                    transition: "opacity 0.3s ease",
+                    opacity: isHovered ? 0.95 : 1
+                  }}>
+                    {p.title}
+                  </div>
+                  <div style={{ 
+                    fontSize: "14px", 
+                    fontWeight: 400, 
+                    marginTop: isHovered ? "8px" : "0px",
+                    lineHeight: "1.4",
+                    maxHeight: isHovered ? "100px" : "0px",
+                    opacity: isHovered ? 1 : 0,
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    overflow: "hidden",
+                  }}>
+                    {p.description}
+                  </div>
                 </div>
+
               </React.Fragment>
             );
           })}
