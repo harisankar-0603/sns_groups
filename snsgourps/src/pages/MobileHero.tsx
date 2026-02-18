@@ -137,17 +137,27 @@ const MobileHero = () => {
           if (index === 0) {
             topPosition = py - 50; // Venture: Shift UP heavily
           } else if (index === 4) {
-            // Spine: Was py+12, user said "went more down" (too low).
-            // Let's optimize: py - 5 (Slightly down from center, but not +12).
-            topPosition = py - 5;
+             topPosition = py - 5; // Spine: Shift slightly down from center
           }
 
-          // Width Logic to force breaks
-          // Square (1), Hub (2), Inst (3).
-          let maxWidthVal = 'calc(100vw - 120px)';
-          if (index === 1) maxWidthVal = '150px'; // Square
-          if (index === 2) maxWidthVal = '150px'; // Hub (New Break)
-          if (index === 3) maxWidthVal = '130px'; // Institutions (Force Harder Break)
+          // Width Logic
+          let maxWidthVal = 'calc(100vw - 120px)'; // Default fallback
+          
+          if (index === 1) { // Square
+             maxWidthVal = 'calc(100vw - 185px)'; 
+          }
+          if (index === 2) { // Hub
+             maxWidthVal = 'calc(100vw - 215px)';
+          }
+          if (index === 3) { // Institutions
+             maxWidthVal = 'calc(100vw - 185px)'; 
+          }
+
+          // Title Wrapping Logic
+          // User: "innovation hub and square technologies title should not break down(only title)"
+          // User: "make the texts for semibold" (Assuming description -> semibold)
+          
+          // Should title always be nowrap? Yes, for pills usually.
 
           return (
             <div
@@ -188,7 +198,7 @@ const MobileHero = () => {
                   alignItems: 'flex-start',
                   width: 'max-content',
                   maxWidth: maxWidthVal,
-                  whiteSpace: 'normal',
+                  // Container allows wrapping generally, children dictate specifics
                 }}
               >
                 <div
@@ -197,24 +207,26 @@ const MobileHero = () => {
                     color: '#fff',
                     fontSize: '10px',
                     fontWeight: '700',
-                    padding: '5px 10px',
+                    padding: '2px 10px 0 10px', // Minimized bottom padding
                     borderRadius: '6px',
                     marginBottom: '4px',
                     textAlign: 'left',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    whiteSpace: 'nowrap', // Force single line per request
                   }}
                 >
                   {service.title}
                 </div>
                 <p
                   style={{
-                    fontSize: '9px',
-                    color: '#555',
-                    maxWidth: '100%',
+                    fontSize: '9px', // Small font
+                    color: '#444',    // Slightly darker for readability
+                    maxWidth: '100%', 
                     lineHeight: '1.3',
-                    fontWeight: '500',
+                    fontWeight: '600', // Changed to 600 (Semibold) per request
                     margin: 0,
                     whiteSpace: 'normal',
+                    overflowWrap: 'anywhere', // Prevent aggressive breaking, only break if necessary
                   }}
                 >
                   {service.description}
