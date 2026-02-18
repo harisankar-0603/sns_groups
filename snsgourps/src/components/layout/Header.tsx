@@ -1,31 +1,57 @@
 ﻿const Header = () => {
   return (
-    <header 
+    <header
       style={{
         backgroundColor: '#ffffff',
-        padding: '16px 24px',
-        width: '100%'
+        width: '100%',
       }}
     >
-      <div 
+      {/* Desktop Header - pill-shaped container */}
+      <div
+        className="hidden md:block"
         style={{
-          backgroundColor: '#ffffff',
-          borderRadius: '100px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #f3f4f6',
-          padding: '12px',
-          display: 'inline-block',
-          width: '100%'
+          padding: '16px 24px',
         }}
       >
-        <img 
-          src="/sns.png" 
-          alt="SNS Groups" 
+        <div
           style={{
-            height: '40px',
+            backgroundColor: '#ffffff',
+            borderRadius: '100px',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #f3f4f6',
+            padding: '12px',
+            display: 'inline-block',
+            width: '100%',
+          }}
+        >
+          <img
+            src="/sns.png"
+            alt="SNS Groups"
+            style={{
+              height: '40px',
+              width: 'auto',
+              objectFit: 'contain',
+              paddingLeft: '60px',
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Mobile Header - simple white bar */}
+      <div
+        className="flex md:hidden flex-row items-center justify-between"
+        style={{
+          padding: '8px 16px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+        }}
+      >
+        <img
+          src="/sns.png"
+          alt="SNS Groups"
+          style={{
+            height: '48px',
             width: 'auto',
             objectFit: 'contain',
-            paddingLeft: '60px'
           }}
         />
       </div>
