@@ -11,21 +11,21 @@ const services = [
   {
     icon: Building2,
     title: 'SNS Venture Capital and Investments',
-    description: 'Funding high-potential startups for strategic ownership stakes.',
+    description: 'Funding high-potential startups for ownership stakes',
     color: '#e53935',
     link: '#',
   },
   {
     icon: Laptop,
     title: 'SNS Square Technologies',
-    description: 'Driving digital transformation with cutting-edge IT and software solutions.',
+    description: 'Empowering digital transformations with IT and software solutions.',
     color: '#a6ce39',
     link: 'https://www.snssquare.com/',
   },
   {
     icon: Lightbulb,
     title: 'SNS Innovation Hub',
-    description: 'Empowering entrepreneurs with mentorship, resources and a platform for innovation.',
+    description: 'Empowering digital transformations with IT and software solutions.',
     color: '#e91e63',
     link: 'https://snsihub.ai/',
   },
@@ -39,141 +39,190 @@ const services = [
   {
     icon: Dumbbell,
     title: 'SNS SPINE',
-    description: 'Igniting Gen Y through movement, innovation, and teamwork.',
+    description: 'Igniting Gen Y through movement, innovation, and teamwork',
     color: '#0ea5c6',
     link: 'https://snsspine.in/',
   },
 ];
 
-const MobileHero: React.FC = () => {
+const MobileHero = () => {
+  // Config
+  // Centered & Spaced Layout
+  // Container Height: 700px (Centered Vertical)
+  // Center Y = 350
+  
+  // Outer Circle: R=170. Center X = -10.
+  // Geometry matches previous stable version.
+  
+  const items = [
+    { px: 47, py: 190 },  // Venture (0)
+    { px: 131, py: 255 }, // Square (1)
+    { px: 160, py: 350 }, // Hub (2)
+    { px: 131, py: 445 }, // Inst (3)
+    { px: 47, py: 510 },  // Spine (4)
+  ];
+
   return (
     <section
-      className="relative"
       style={{
-        backgroundColor: '#f4f4f4',
-        paddingTop: '64px',
-        paddingBottom: '64px',
-        minHeight: '900px',
+        position: 'relative',
+        width: '100%',
+        minHeight: '700px', 
+        backgroundColor: '#fff',
         overflow: 'hidden',
+        fontFamily: '"Roboto", sans-serif',
       }}
     >
-      <div className="relative" style={{ minHeight: '820px' }}>
-        {/* Outer Circle — gray border, no fill */}
+      <div style={{ position: 'relative', height: '700px' }}>
+        {/* OUTER GRAY ARC */}
         <div
-          className="absolute rounded-full"
           style={{
-            width: '580px',
-            height: '580px',
-            border: '4px solid #b0b0b0',
-            top: '50%',
-            left: '-290px',
-            transform: 'translateY(-50%)',
+            position: 'absolute',
+            width: '340px',
+            height: '340px',
+            borderRadius: '50%',
+            border: '3px solid #b0b0b0',
+            left: '-180px', 
+            top: '180px', // Center Y = 350. Top = 180.
+            zIndex: 1,
+            boxShadow: '0 0 20px rgba(0,0,0,0.07)',
           }}
         />
 
-        {/* Yellow Inner Core */}
+        {/* INNER YELLOW CORE */}
         <div
-          className="absolute rounded-full flex items-center justify-center"
           style={{
-            width: '480px',
-            height: '480px',
-            backgroundColor: '#f4c430',
-            top: '50%',
-            left: '-240px',
-            transform: 'translateY(-50%)',
+            position: 'absolute',
+            width: '270px',
+            height: '270px',
+            borderRadius: '50%',
+            backgroundColor: '#fde047',
+            border: '7px solid #fff',
+            left: '-145px', 
+            top: '215px', // Center Y = 350. Top = 215.
+            zIndex: 2,
+            boxShadow: '0 0 12px rgba(0,0,0,0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            paddingLeft: '155px',
+            boxSizing: 'border-box',
           }}
         >
-          <p
+          <h1
             style={{
-              width: '220px',
-              fontSize: '1.75rem',
-              fontWeight: 600,
+              width: '110px',
+              fontSize: '0.9rem',
+              fontWeight: 800,
               lineHeight: '1.25',
-              textAlign: 'left',
               color: '#000',
-              marginLeft: '280px',
+              textAlign: 'left',
+              margin: 0,
+              marginTop: '-5px',
             }}
           >
             SNS Design Thinking Consultancy
-          </p>
+          </h1>
         </div>
 
-        {/* Service Items — arc-positioned around circle */}
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: '700px',
-          }}
-        >
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            const servicePositions = [
-              'translate(102px, 170px)',
-              'translate(210px, 280px)',
-              'translate(270px, 430px)',
-              'translate(210px, 580px)',
-              'translate(102px, 690px)',
-            ];
-            return (
+        {/* SERVICE ITEMS */}
+        {items.map(({ px, py }, index) => {
+          const service = services[index];
+          const Icon = service.icon;
+          const iconSize = 34;
+
+          // Vertical Alignment Logic
+          let topPosition = py - 12; // Default (Centered on Icon)
+          
+          if (index === 0) {
+            topPosition = py - 50; // Venture: Shift UP heavily
+          } else if (index === 4) {
+             // Spine: Was py+12, user said "went more down" (too low).
+             // Let's optimize: py - 5 (Slightly down from center, but not +12).
+             topPosition = py - 5; 
+          }
+
+          // Width Logic to force breaks
+          // Square (1), Hub (2), Inst (3).
+          let maxWidthVal = 'calc(100vw - 120px)';
+          if (index === 1) maxWidthVal = '150px'; // Square
+          if (index === 2) maxWidthVal = '150px'; // Hub (New Break)
+          if (index === 3) maxWidthVal = '130px'; // Institutions (Force Harder Break)
+
+          return (
+            <div
+              key={index}
+              style={{ position: 'absolute', zIndex: 10, cursor: 'pointer' }}
+              onClick={() => window.open(service.link, '_blank')}
+            >
+              {/* Icon */}
               <div
-                key={service.title}
-                className="absolute flex flex-row items-center gap-3 cursor-pointer"
                 style={{
-                  transform: servicePositions[index],
+                  position: 'absolute',
+                  width: `${iconSize}px`,
+                  height: `${iconSize}px`,
+                  borderRadius: '50%',
+                  backgroundColor: service.color,
+                  border: '2px solid #fff',
+                  left: `${px - iconSize / 2}px`,
+                  top: `${py - iconSize / 2}px`,
+                  zIndex: 20,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
                 }}
-                onClick={() => window.open(service.link, '_blank', 'noopener,noreferrer')}
               >
-                {/* Icon Circle */}
+                <Icon size={18} color="#fff" />
+              </div>
+
+              {/* Text Container */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${px + iconSize / 2 + 24}px`, 
+                  top: `${topPosition}px`, 
+                  zIndex: 15,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  width: 'max-content',
+                  maxWidth: maxWidthVal,
+                  whiteSpace: 'normal',
+                }}
+              >
                 <div
-                  className="rounded-full flex items-center justify-center shrink-0"
                   style={{
-                    width: '40px',
-                    height: '40px',
                     backgroundColor: service.color,
+                    color: '#fff',
+                    fontSize: '10px',
+                    fontWeight: '700',
+                    padding: '5px 10px',
+                    borderRadius: '6px',
+                    marginBottom: '4px',
+                    textAlign: 'left',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                   }}
                 >
-                  <Icon style={{ width: '18px', height: '18px', color: '#fff' }} />
+                  {service.title}
                 </div>
-
-                {/* Content Block */}
-                <div className="flex flex-col" style={{ maxWidth: '200px' }}>
-                  {/* Colored Title Bar */}
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      backgroundColor: service.color,
-                      color: '#fff',
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      paddingLeft: '20px',
-                      paddingRight: '20px',
-                      paddingTop: '10px',
-                      paddingBottom: '10px',
-                      borderRadius: '8px',
-                      width: 'fit-content',
-                    }}
-                  >
-                    {service.title}
-                  </span>
-
-                  {/* Description */}
-                  <p
-                    style={{
-                      marginTop: '8px',
-                      maxWidth: '200px',
-                      fontSize: '12px',
-                      lineHeight: '1.6',
-                      color: '#444',
-                    }}
-                  >
-                    {service.description}
-                  </p>
-                </div>
+                <p
+                  style={{
+                    fontSize: '9px',
+                    color: '#555',
+                    maxWidth: '100%', 
+                    lineHeight: '1.3',
+                    fontWeight: '500',
+                    margin: 0,
+                    whiteSpace: 'normal',
+                  }}
+                >
+                  {service.description}
+                </p>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
