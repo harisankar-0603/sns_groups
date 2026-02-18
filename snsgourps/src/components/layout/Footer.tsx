@@ -30,8 +30,10 @@ const Footer = () => {
             src={snsFullLogo} 
             alt="SNS Institutions" 
             style={{
-              height: '144px',
+              height: 'auto',
               width: 'auto',
+              maxWidth: '100%',
+              maxHeight: '144px', // Cap height at originally intended size
               objectFit: 'contain'
             }}
           />
