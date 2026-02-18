@@ -6,6 +6,7 @@ import {
   School,
   HeartPulse,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 /* ===============================
    ARC MATH HELPERS
@@ -88,6 +89,38 @@ const Hero: React.FC = () => {
     },
   ];
 
+  // CINEMATIC EASING
+  // Apple-like smooth cubic-bezier
+  // Cast to any to avoid TS tuple issues while valid in Framer Motion
+  const EASE_CINEMATIC: any = [0.22, 1, 0.36, 1];
+
+  // Animation constants
+  const BACKGROUND_DURATION = 0.8;
+
+  // Circle visual reveals
+  const OUTER_CIRCLE_DURATION = 1.0;
+  const INNER_CIRCLE_DELAY = 0.2; // Stagger inner after outer
+  const ARCS_DURATION = 1.2;
+
+  // Text Animations (Inside Circle)
+  // Headline starts at 300ms
+  const HEADLINE_DELAY = 0.3;
+  const HEADLINE_DURATION = 0.9;
+
+  // Subheading starts 200ms after headline begins
+  const SUBHEADING_DELAY = HEADLINE_DELAY + 0.2;
+  const SUBHEADING_DURATION = 0.8;
+
+  // Right Side Elements
+  // Dots enter after circles are mostly established or alongside text
+  // Let's time them to start feeling "grounded" as the text settles
+  const DOT_START_DELAY = 1.0;
+  const DOT_DURATION = 0.8;
+
+  // Pills follow dots
+  const PILL_START_DELAY = DOT_START_DELAY + 0.3;
+  const PILL_STAGGER = 0.12; // Micro stagger
+
   return (
     <section
       className="w-full min-h-screen flex items-center justify-start relative"
@@ -96,36 +129,40 @@ const Hero: React.FC = () => {
       }}
     >
       {/* Gradient background blob - top right */}
-      <div 
-        className="absolute z-0" 
+      <motion.div
+        className="absolute z-0"
         style={{
-          top: '0',
+          top: '-10px',
           right: '0',
           width: '500px',
-          height: '280px',
+          height: '500px',
           background: 'linear-gradient(90deg, #FFF4D6 0%, #FFEEB8 100%)',
-          opacity: 0.5,
           borderRadius: '140px',
-          filter: 'blur(50px)',
+          filter: 'blur(30px)',
         }}
-      ></div>
-      
+        initial={{ opacity: 0, y: 5 }} // Subtle shift
+        animate={{ opacity: 0.5, y: 0 }}
+        transition={{ duration: BACKGROUND_DURATION, ease: "easeOut" }}
+      ></motion.div>
+
       {/* Gradient background blob - bottom left */}
-      <div 
-        className="absolute z-0" 
+      <motion.div
+        className="absolute z-0"
         style={{
-          bottom: '0',
+          bottom: '-10px',
           left: '0',
           width: '500px',
-          height: '280px',
+          height: '500px',
           background: 'linear-gradient(90deg, #FFF4D6 0%, #FFEEB8 100%)',
-          opacity: 0.5,
           borderRadius: '140px',
-          filter: 'blur(50px)',
+          filter: 'blur(30px)',
         }}
-      ></div>
-      
-      {/* ✅ ONLY THIS WRAPPER IS NEW */}
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 0.5, y: 0 }}
+        transition={{ duration: BACKGROUND_DURATION, ease: "easeOut" }}
+      ></motion.div>
+
+      {/* ✅ MAIN VISUAL WRAPPER */}
       <div style={{ transform: "translateX(300px)" }}>
         <div
           className="relative flex items-center justify-center"
@@ -138,31 +175,95 @@ const Hero: React.FC = () => {
             viewBox={`0 0 ${SIZE} ${SIZE}`}
             className="absolute inset-0"
           >
-            <path d={describeArc(CENTER, CENTER, RADIUS, 328, 360)} stroke="#E63A2E" strokeWidth={STROKE} fill="none" />
-            <path d={describeArc(CENTER, CENTER, RADIUS, 291, 323)} stroke="#8BCF00" strokeWidth={STROKE} fill="none" />
-            <path d={describeArc(CENTER, CENTER, RADIUS, 254, 286)} stroke="#E5008D" strokeWidth={STROKE} fill="none" />
-            <path d={describeArc(CENTER, CENTER, RADIUS, 217, 249)} stroke="#FF6A00" strokeWidth={STROKE} fill="none" />
-            <path d={describeArc(CENTER, CENTER, RADIUS, 180, 212)} stroke="#00C4F4" strokeWidth={STROKE} fill="none" />
+            {[
+              { start: 328, end: 360, color: "#E63A2E" },
+              { start: 291, end: 323, color: "#8BCF00" },
+              { start: 254, end: 286, color: "#E5008D" },
+              { start: 217, end: 249, color: "#FF6A00" },
+              { start: 180, end: 212, color: "#00C4F4" },
+            ].map((arc, i) => (
+              <motion.path
+                key={i}
+                d={describeArc(CENTER, CENTER, RADIUS, arc.start, arc.end)}
+                stroke={arc.color}
+                strokeWidth={STROKE}
+                fill="none"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{
+                  duration: ARCS_DURATION,
+                  ease: EASE_CINEMATIC,
+                  delay: 0, // Starts immediately
+                }}
+              />
+            ))}
           </svg>
 
-          {/* ===== CENTER ===== */}
-          <div
+          {/* ===== CENTER - OUTER WHITE CIRCLE ===== */}
+          <motion.div
             className="absolute rounded-full bg-white flex items-center justify-center"
             style={{
               width: 360,
               height: 360,
-              boxShadow: "0 20px 50px rgba(0,0,0,0.28)",
+              // Subtle shadow as requested
+              boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+            }}
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{
+              clipPath: "inset(0 0 0 0)",
+              transitionEnd: { clipPath: "none" }
+            }}
+            transition={{
+              duration: OUTER_CIRCLE_DURATION,
+              ease: EASE_CINEMATIC,
+              delay: 0,
             }}
           >
-            <div
+            {/* ===== CENTER - INNER YELLOW CIRCLE ===== */}
+            <motion.div
               className="rounded-full bg-[#FFCC00] flex flex-col items-center justify-center text-center"
-              style={{ width: 310, height: 310 }}
+              style={{ width: 300, height: 300 }}
+              initial={{ clipPath: "inset(0 0 100% 0)" }}
+              animate={{
+                clipPath: "inset(0 0 0 0)",
+                transitionEnd: { clipPath: "none" }
+              }}
+              transition={{
+                duration: OUTER_CIRCLE_DURATION,
+                ease: EASE_CINEMATIC,
+                delay: INNER_CIRCLE_DELAY,
+              }}
             >
-              <h1 className="font-black text-black" style={{ fontSize: '60px', lineHeight: '1', marginBottom: '0px' }}>SNS</h1>
-              <p className="font-medium text-black" style={{ fontSize: '22px', lineHeight: '0', marginBottom: '0px' }}>Design Thinking</p>
-              <p className="font-medium text-black" style={{ fontSize: '22px', lineHeight: '1.3' }}>Consultancy</p>
-            </div>
-          </div>
+              {/* TEXT CONTENT - HEADLINE */}
+              <motion.h1
+                className="font-black text-black"
+                style={{ fontSize: '60px', lineHeight: '1', marginBottom: '0px' }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: HEADLINE_DURATION,
+                  ease: EASE_CINEMATIC,
+                  delay: HEADLINE_DELAY,
+                }}
+              >
+                SNS
+              </motion.h1>
+
+              {/* TEXT CONTENT - SUBHEADING */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: SUBHEADING_DURATION,
+                  ease: EASE_CINEMATIC,
+                  delay: SUBHEADING_DELAY,
+                }}
+              >
+                <p className="font-medium text-black" style={{ fontSize: '22px', lineHeight: '0', marginBottom: '0px' }}>Design Thinking</p>
+                <p className="font-medium text-black" style={{ fontSize: '22px', lineHeight: '1.3' }}>Consultancy</p>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* ===== RIGHT-SIDE DOTS + PILLS ===== */}
           {pills.map((p, index) => {
@@ -183,7 +284,8 @@ const Hero: React.FC = () => {
 
             return (
               <React.Fragment key={p.title}>
-                <div
+                {/* DOT ANIMATION - NO BOUNCE */}
+                <motion.div
                   className="absolute flex items-center justify-center"
                   style={{
                     left: dotLeft,
@@ -194,11 +296,19 @@ const Hero: React.FC = () => {
                     backgroundColor: p.color,
                     boxShadow: "0 6px 14px rgba(0,0,0,0.12)",
                   }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    delay: DOT_START_DELAY,
+                    duration: DOT_DURATION,
+                    ease: EASE_CINEMATIC,
+                  }}
                 >
                   <Icon size={24} color="white" />
-                </div>
+                </motion.div>
 
-                <div
+                {/* PILL ANIMATION - NO SLIDE FROM 50px */}
+                <motion.div
                   className="absolute"
                   onMouseEnter={() => setHoveredPill(index)}
                   onMouseLeave={() => setHoveredPill(null)}
@@ -214,30 +324,51 @@ const Hero: React.FC = () => {
                     boxShadow: isHovered ? "0 10px 20px rgba(0,0,0,0.15)" : "0 6px 14px rgba(0,0,0,0.08)",
                     width: "420px",
                     textAlign: "center",
-                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                     cursor: "pointer",
                     overflow: "hidden",
                   }}
+                  // Gentle entrance: slight x shift, fade in
+                  initial={{ x: 20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{
+                    // Entrance animation
+                    x: {
+                      delay: PILL_START_DELAY + index * PILL_STAGGER,
+                      duration: 0.8,
+                      ease: EASE_CINEMATIC
+                    },
+                    opacity: {
+                      delay: PILL_START_DELAY + index * PILL_STAGGER,
+                      duration: 0.8,
+                      ease: EASE_CINEMATIC
+                    },
+                    // Layout transition (for hover effects)
+                    layout: { duration: 0.4, ease: EASE_CINEMATIC }
+                  }}
+                  layout // This helps animate between hover states smoothly if dimensions change
                 >
-                  <div style={{ 
+                  <div style={{
                     transition: "opacity 0.3s ease",
                     opacity: isHovered ? 0.95 : 1
                   }}>
                     {p.title}
                   </div>
-                  <div style={{ 
-                    fontSize: "14px", 
-                    fontWeight: 400, 
-                    marginTop: isHovered ? "8px" : "0px",
-                    lineHeight: "1.4",
-                    maxHeight: isHovered ? "100px" : "0px",
-                    opacity: isHovered ? 1 : 0,
-                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                    overflow: "hidden",
-                  }}>
+                  <motion.div
+                    animate={{
+                      height: isHovered ? "auto" : 0,
+                      opacity: isHovered ? 1 : 0,
+                      marginTop: isHovered ? 8 : 0
+                    }}
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      lineHeight: "1.4",
+                      overflow: "hidden",
+                    }}
+                  >
                     {p.description}
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
 
               </React.Fragment>
             );
