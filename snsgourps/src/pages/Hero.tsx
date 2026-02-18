@@ -56,8 +56,9 @@ const Hero: React.FC = () => {
       title: "SNS Venture Capital & Investment",
       description: "Funding high-potential startups for ownership stakes.",
       color: "#E63A2E",
-      mid: (328 + 360) / 2,
+      mid: 349, // Adjusted for visual alignment (math center is 344)
       icon: Building2,
+      link: "#", // Placeholder as no URL provided
     },
     {
       title: "SNS Square Technologies",
@@ -65,13 +66,15 @@ const Hero: React.FC = () => {
       color: "#8BCF00",
       mid: (291 + 323) / 2,
       icon: Laptop,
+      link: "https://www.snssquare.com/",
     },
     {
       title: "SNS Innovation Hub",
       description: "Empowering digital transformations with IT and software solutions.",
       color: "#E5008D",
-      mid: (254 + 286) / 2,
+      mid: 270,
       icon: Brain,
+      link: "https://snsihub.ai/",
     },
     {
       title: "SNS Institutions",
@@ -79,32 +82,36 @@ const Hero: React.FC = () => {
       color: "#FF6A00",
       mid: (217 + 249) / 2,
       icon: School,
+      link: "https://main.snsgroups.com/",
     },
     {
       title: "SNS SPINE",
       description: "Enabling mental and physical well-being through sports, gaming, entertainment and clubs.",
       color: "#00C4F4",
-      mid: (180 + 212) / 2,
+      mid: 191, // Adjusted for visual alignment (math center is 196)
       icon: HeartPulse,
+      link: "https://snsspine.in/",
     },
   ];
 
   // CINEMATIC EASING
-  // Apple-like smooth cubic-bezier
-  // Cast to any to avoid TS tuple issues while valid in Framer Motion
   const EASE_CINEMATIC: any = [0.22, 1, 0.36, 1];
+  const EASE_ARC = "easeInOut";
 
   // Animation constants
   const BACKGROUND_DURATION = 0.8;
 
   // Circle visual reveals
-  const OUTER_CIRCLE_DURATION = 1.0;
-  const INNER_CIRCLE_DELAY = 0.2; // Stagger inner after outer
-  const ARCS_DURATION = 1.2;
+  // Centers starts first
+  const CENTER_CIRCLE_DURATION = 0.9;
+  const CENTER_CIRCLE_DELAY = 0;
+
+  // Arc starts 200ms later and takes longer
+  const ARC_DURATION = 1.8;
+  const ARC_DELAY = 0.2;
 
   // Text Animations (Inside Circle)
-  // Headline starts at 300ms
-  const HEADLINE_DELAY = 0.3;
+  const HEADLINE_DELAY = 0.4;
   const HEADLINE_DURATION = 0.9;
 
   // Subheading starts 200ms after headline begins
@@ -112,9 +119,8 @@ const Hero: React.FC = () => {
   const SUBHEADING_DURATION = 0.8;
 
   // Right Side Elements
-  // Dots enter after circles are mostly established or alongside text
-  // Let's time them to start feeling "grounded" as the text settles
-  const DOT_START_DELAY = 1.0;
+  // Start after the main circle/arc system is established
+  const DOT_START_DELAY = 1.4;
   const DOT_DURATION = 0.8;
 
   // Pills follow dots
@@ -191,9 +197,9 @@ const Hero: React.FC = () => {
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{
-                  duration: ARCS_DURATION,
-                  ease: EASE_CINEMATIC,
-                  delay: 0, // Starts immediately
+                  duration: ARC_DURATION,
+                  ease: EASE_ARC,
+                  delay: ARC_DELAY,
                 }}
               />
             ))}
@@ -205,33 +211,26 @@ const Hero: React.FC = () => {
             style={{
               width: 360,
               height: 360,
-              // Subtle shadow as requested
               boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+              transformOrigin: "50% 0%",
             }}
-            initial={{ clipPath: "inset(0 0 100% 0)" }}
-            animate={{
-              clipPath: "inset(0 0 0 0)",
-              transitionEnd: { clipPath: "none" }
-            }}
+            initial={{ opacity: 0, scale: 0.2 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{
-              duration: OUTER_CIRCLE_DURATION,
-              ease: EASE_CINEMATIC,
-              delay: 0,
+              duration: 0.7,
+              ease: "easeOut",
+              delay: CENTER_CIRCLE_DELAY,
             }}
           >
-            {/* ===== CENTER - INNER YELLOW CIRCLE ===== */}
             <motion.div
               className="rounded-full bg-[#FFCC00] flex flex-col items-center justify-center text-center"
-              style={{ width: 300, height: 300 }}
-              initial={{ clipPath: "inset(0 0 100% 0)" }}
-              animate={{
-                clipPath: "inset(0 0 0 0)",
-                transitionEnd: { clipPath: "none" }
-              }}
+              style={{ width: 300, height: 300, transformOrigin: "50% 0%" }}
+              initial={{ scale: 0.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
               transition={{
-                duration: OUTER_CIRCLE_DURATION,
-                ease: EASE_CINEMATIC,
-                delay: INNER_CIRCLE_DELAY,
+                duration: 0.6,
+                ease: "easeOut",
+                delay: CENTER_CIRCLE_DELAY + 0.15,
               }}
             >
               {/* TEXT CONTENT - HEADLINE */}
@@ -269,17 +268,17 @@ const Hero: React.FC = () => {
           {pills.map((p, index) => {
             const Icon = p.icon;
             const mirrored = (360 - p.mid) % 360;
-            const dotSize = 48;
+            const dotSize = 40;
             const isHovered = hoveredPill === index;
 
             const dotPos = polarToCartesian(
               CENTER,
               CENTER,
-              RADIUS - STROKE / 2 + 8,
+              RADIUS, // Align exactly with Arc radius
               mirrored
             );
 
-            const dotLeft = dotPos.x - dotSize / 2 + 40;
+            const dotLeft = dotPos.x - dotSize / 2 + 20; // Reduced global offset to bring closer to center
             const dotTop = dotPos.y - dotSize / 2;
 
             return (
@@ -312,24 +311,30 @@ const Hero: React.FC = () => {
                   className="absolute"
                   onMouseEnter={() => setHoveredPill(index)}
                   onMouseLeave={() => setHoveredPill(null)}
+                  onClick={() => p.link && window.open(p.link, "_blank")}
                   style={{
-                    left: dotLeft + dotSize + 18,
+                    left: dotLeft + dotSize + 12, // Reduced gap between dot and pill
                     top: isHovered ? dotPos.y - 38 : dotPos.y - 22,
                     backgroundColor: p.color,
                     color: "white",
-                    padding: isHovered ? "18px 28px" : "12px 28px",
-                    borderRadius: "9999px",
+                    padding: isHovered ? "16px 24px" : "10px 24px", // Sleeker sizing
+                    borderRadius: "28px", // Fixed radius to avoid morph jank
                     fontWeight: 700,
                     whiteSpace: isHovered ? "normal" : "nowrap",
-                    boxShadow: isHovered ? "0 10px 20px rgba(0,0,0,0.15)" : "0 6px 14px rgba(0,0,0,0.08)",
-                    width: "420px",
+                    boxShadow: isHovered ? "0 15px 30px rgba(0,0,0,0.2)" : "0 6px 14px rgba(0,0,0,0.08)",
+                    width: "400px",
                     textAlign: "center",
                     cursor: "pointer",
                     overflow: "hidden",
+                    zIndex: 20,
                   }}
                   // Gentle entrance: slight x shift, fade in
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
+                  initial={{ x: 20, opacity: 0, scale: 1 }}
+                  animate={{
+                    x: 0,
+                    opacity: 1,
+                    scale: isHovered ? 1.03 : 1, // Energy added on hover
+                  }}
                   transition={{
                     // Entrance animation
                     x: {
@@ -342,8 +347,12 @@ const Hero: React.FC = () => {
                       duration: 0.8,
                       ease: EASE_CINEMATIC
                     },
-                    // Layout transition (for hover effects)
-                    layout: { duration: 0.4, ease: EASE_CINEMATIC }
+                    // Hover interactions - Instant & Smooth
+                    scale: { duration: 0.25, ease: "easeOut" },
+                    backgroundColor: { duration: 0.25, ease: "easeOut" },
+                    padding: { duration: 0.25, ease: "easeOut" },
+                    boxShadow: { duration: 0.25, ease: "easeOut" },
+                    layout: { duration: 0.25, ease: "easeOut" }
                   }}
                   layout // This helps animate between hover states smoothly if dimensions change
                 >
@@ -375,7 +384,7 @@ const Hero: React.FC = () => {
           })}
         </div>
       </div>
-    </section>
+    </section >
   );
 };
 
