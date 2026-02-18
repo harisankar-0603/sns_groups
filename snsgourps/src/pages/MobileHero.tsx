@@ -1,4 +1,4 @@
-import React from 'react';
+
 import {
   Building2,
   Laptop,
@@ -50,10 +50,10 @@ const MobileHero = () => {
   // Centered & Spaced Layout
   // Container Height: 700px (Centered Vertical)
   // Center Y = 350
-  
+
   // Outer Circle: R=170. Center X = -10.
   // Geometry matches previous stable version.
-  
+
   const items = [
     { px: 47, py: 190 },  // Venture (0)
     { px: 131, py: 255 }, // Square (1)
@@ -67,7 +67,7 @@ const MobileHero = () => {
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '700px', 
+        minHeight: '700px',
         backgroundColor: '#fff',
         overflow: 'hidden',
         fontFamily: '"Roboto", sans-serif',
@@ -82,7 +82,7 @@ const MobileHero = () => {
             height: '340px',
             borderRadius: '50%',
             border: '3px solid #b0b0b0',
-            left: '-180px', 
+            left: '-180px',
             top: '180px', // Center Y = 350. Top = 180.
             zIndex: 1,
             boxShadow: '0 0 20px rgba(0,0,0,0.07)',
@@ -98,7 +98,7 @@ const MobileHero = () => {
             borderRadius: '50%',
             backgroundColor: '#fde047',
             border: '7px solid #fff',
-            left: '-145px', 
+            left: '-145px',
             top: '215px', // Center Y = 350. Top = 215.
             zIndex: 2,
             boxShadow: '0 0 12px rgba(0,0,0,0.1)',
@@ -133,13 +133,13 @@ const MobileHero = () => {
 
           // Vertical Alignment Logic
           let topPosition = py - 12; // Default (Centered on Icon)
-          
+
           if (index === 0) {
             topPosition = py - 50; // Venture: Shift UP heavily
           } else if (index === 4) {
-             // Spine: Was py+12, user said "went more down" (too low).
-             // Let's optimize: py - 5 (Slightly down from center, but not +12).
-             topPosition = py - 5; 
+            // Spine: Was py+12, user said "went more down" (too low).
+            // Let's optimize: py - 5 (Slightly down from center, but not +12).
+            topPosition = py - 5;
           }
 
           // Width Logic to force breaks
@@ -180,8 +180,8 @@ const MobileHero = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: `${px + iconSize / 2 + 24}px`, 
-                  top: `${topPosition}px`, 
+                  left: `${px + iconSize / 2 + 24}px`,
+                  top: `${topPosition}px`,
                   zIndex: 15,
                   display: 'flex',
                   flexDirection: 'column',
@@ -210,7 +210,7 @@ const MobileHero = () => {
                   style={{
                     fontSize: '9px',
                     color: '#555',
-                    maxWidth: '100%', 
+                    maxWidth: '100%',
                     lineHeight: '1.3',
                     fontWeight: '500',
                     margin: 0,

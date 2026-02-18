@@ -103,7 +103,6 @@ const Hero: React.FC = () => {
 
   // Circle visual reveals
   // Centers starts first
-  const CENTER_CIRCLE_DURATION = 0.9;
   const CENTER_CIRCLE_DELAY = 0;
 
   // Arc starts 200ms later and takes longer
