@@ -67,13 +67,13 @@ const MobileHero = () => {
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '700px',
+        minHeight: '650px',
         backgroundColor: '#fff',
         overflow: 'hidden',
         fontFamily: '"Roboto", sans-serif',
       }}
     >
-      <div style={{ position: 'relative', height: '700px' }}>
+      <div style={{ position: 'relative', height: '650px' }}>
         {/* OUTER GRAY ARC */}
         <div
           style={{

@@ -12,6 +12,9 @@ const Footer = () => {
         paddingTop: '32px',
         paddingBottom: '16px',
         fontFamily: 'Arial, sans-serif',
+        marginTop: '-80px', // Moving footer upwards much more as requested
+        position: 'relative', // Ensure it sits on top of the hero
+        zIndex: 10,
       }}
     >
       {/* ── Logo — always centered ── */}
