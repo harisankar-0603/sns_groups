@@ -1,4 +1,5 @@
-import React from "react";
+// ... imports
+import React, { useEffect, useState } from "react";
 import {
   Building2,
   Laptop,
@@ -50,6 +51,37 @@ const Hero: React.FC = () => {
   const RADIUS = 225;
   const STROKE = 30;
   const [hoveredPill, setHoveredPill] = React.useState<number | null>(null);
+  const [scale, setScale] = useState(1);
+  const [pillWidth, setPillWidth] = useState("400px");
+
+  // Handle responsive scaling
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+
+      // Update scale and layout state
+      if (width < 1024) {
+        setScale(0.65);
+        setPillWidth("300px");
+      } else if (width < 1280) {
+        setScale(0.75);
+        setPillWidth("320px");
+      } else if (width < 1550) {
+        setScale(0.9);
+        setPillWidth("360px");
+      } else if (width >= 2000) {
+        setScale(1.3); // 4K Scaling
+        setPillWidth("450px");
+      } else {
+        setScale(1);
+        setPillWidth("400px");
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const pills = [
     {
@@ -103,7 +135,6 @@ const Hero: React.FC = () => {
 
   // Circle visual reveals
   // Centers starts first
-  const CENTER_CIRCLE_DURATION = 0.9;
   const CENTER_CIRCLE_DELAY = 0;
 
   // Arc starts 200ms later and takes longer
@@ -129,7 +160,7 @@ const Hero: React.FC = () => {
 
   return (
     <section
-      className="w-full min-h-screen flex items-center justify-start relative"
+      className="w-full min-h-screen flex items-center justify-center relative overflow-hidden"
       style={{
         marginTop: "-40px",
       }}
@@ -169,7 +200,21 @@ const Hero: React.FC = () => {
       ></motion.div>
 
       {/* ✅ MAIN VISUAL WRAPPER */}
-      <div style={{ transform: "translateX(300px)" }}>
+      <div
+        style={{
+          // We apply translation BEFORE scaling to maintain consistent visual centering relative to the content size
+          // -200px shifts the visual center (which is roughly between circle and pills) to the screen center
+          transform: `translateX(-200px) scale(${scale})`,
+          transformOrigin: 'center center',
+          transition: "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)",
+          width: SIZE,
+          height: SIZE,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative'
+        }}
+      >
         <div
           className="relative flex items-center justify-center"
           style={{ width: SIZE, height: SIZE }}
@@ -322,7 +367,7 @@ const Hero: React.FC = () => {
                     fontWeight: 700,
                     whiteSpace: isHovered ? "normal" : "nowrap",
                     boxShadow: isHovered ? "0 15px 30px rgba(0,0,0,0.2)" : "0 6px 14px rgba(0,0,0,0.08)",
-                    width: "400px",
+                    width: pillWidth,
                     textAlign: "center",
                     cursor: "pointer",
                     overflow: "hidden",
